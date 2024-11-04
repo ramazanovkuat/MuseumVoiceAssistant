@@ -1,4 +1,7 @@
 .venv
-.DS_Store
 .env
 data
+wheights
+
+.DS_Store
+__pycache__/
