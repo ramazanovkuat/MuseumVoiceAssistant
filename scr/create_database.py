@@ -44,6 +44,8 @@ def create_bm25_faiss_rerank(documents_folder: str | PosixPath,
     Returns:
         (ContextualCompressionRetriever) : ретривер-реранкер 
     """
+    if isinstance(documents_folder, str):
+        documents_folder = Path(documents_folder)
     raw_documents = get_raw_documents(documents_folder)
     chunked_documents_with_page_content = chunking_method.split_documents(raw_documents)
     chunked_documents = [doc.page_content for doc in chunked_documents_with_page_content]
