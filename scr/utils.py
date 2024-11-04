@@ -10,7 +10,10 @@ def process_data(doc: Document) -> dict:
         dict: словарь с содержанием 'содержание' и названием источника 'источник'
     """
     page_content = doc.page_content
-    source = doc.metadata['source'].split("/")[-1].split(".")[0]
+    if 'source' in doc.metadata.keys():
+        source = doc.metadata['source'].split("/")[-1].split(".")[0]
+    else:
+        source = ''
     return {'источник': source, 'содержание': page_content}
 
 def process_retrieve_output(docs: list[Document]) -> list[dict]:

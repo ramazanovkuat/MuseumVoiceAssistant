@@ -69,4 +69,3 @@ def create_bm25_faiss_rerank(documents_folder: str | PosixPath,
     compressor = CrossEncoderReranker(model=rerank_model, top_n=rerank_n_docs)
     compression_retriever = ContextualCompressionRetriever(base_compressor=compressor, base_retriever=vector_database)
     return compression_retriever
-    
