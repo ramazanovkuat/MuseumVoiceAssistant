@@ -1,4 +1,4 @@
-from readers import *
+from scr.readers import *
 from pathlib import PosixPath
 from langchain_text_splitters.character import RecursiveCharacterTextSplitter
 from langchain_huggingface import HuggingFaceEmbeddings
