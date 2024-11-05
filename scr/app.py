@@ -14,7 +14,23 @@ vector_db_path = os.path.join(data_folder, "vector_dbs", "bm25_faiss_rerank_firs
 # Инициализация экземпляра класса RAG
 rag = RAG(retriever_path_to_upload=vector_db_path)
 
-question = "Что такое юрта?"
-answer = rag.get_llm_answer(question)
+# Initialize chat history
+if "messages" not in st.session_state:
+    st.session_state.messages = []
 
-print(answer)
+# Display chat messages from history on app rerun
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
+
+# Accept user input
+if question := st.chat_input("Введите вопрос"):
+    # Add user message to chat history
+    st.session_state.messages.append({"role": "user", "content": question})
+    # Display user message in chat message container
+    with st.chat_message("user"):
+        st.markdown(question)
+    
+    with st.chat_message("assistant"):
+        answer = rag.get_llm_answer(question)
+        st.markdown(answer)
