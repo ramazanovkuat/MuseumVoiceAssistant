@@ -1,2 +1,1 @@
-- `requirements.txt` - создание бд
-- `requirements_prod.txt` - продакшн
+`create_vector_db.ipynb` - создание БД 
