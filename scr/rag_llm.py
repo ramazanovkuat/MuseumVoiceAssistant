@@ -1,6 +1,6 @@
 import os
 import pickle
-from typing import Any
+from typing import Any, Literal
 from langchain.docstore.document import Document
 from langchain_community.llms import YandexGPT
 
@@ -13,17 +13,27 @@ class RAG:
     который загружает ретривер и использует его для получения ответов на вопросы.
     """
     
-    def __init__(self, retriever_path_to_upload: str):
+    def __init__(self, retriever_path_to_upload: str,
+                 model_name: Literal['yandexgpt', 'yandexgpt-lite', 'yandexgpt-32k']='yandexgpt-lite',
+                 model_version: Literal['deprecated', 'latest', 'rc']='latest'):
         """
         Инициализирует экземпляр RAG, загружая ретривер из файла.
+        Подробнее о версиях моделей: 
+        https://yandex.cloud/ru/docs/foundation-models/concepts/yandexgpt/models
+
+        Примечаение: модель 'yandexgpt-32k' только в версии 'rc' на 05.11.2024.
 
         Args:
             retriever_path_to_upload (str): путь к ретриверу (с расширением).
+            model_name (Literal['yandexgpt', 'yandexgpt-lite', 'yandexgpt-32k']): название модели
+            model_version (Literal['deprecated', 'latest', 'rc']): версия модели
         """
         self.retriever_path_to_upload = retriever_path_to_upload
         self.retriever = self.upload_retriever()
-        # TODO: посмотреть, как определить версию модели 
-        self.yandex_gpt = YandexGPT(api_key=os.getenv('YGPT_API_KEY'), folder_id=os.getenv('YGPT_FOLDER_IP'))
+        self.yandex_gpt = YandexGPT(api_key=os.getenv('YGPT_API_KEY'), 
+                                    folder_id=os.getenv('YGPT_FOLDER_IP'), 
+                                    model_name=model_name,
+                                    model_version=model_version)
     
     def upload_retriever(self) -> Any:
         """

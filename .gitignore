@@ -2,6 +2,7 @@
 .venv_prod
 .env
 data
+notebooks/experiments.ipynb
 wheights
 
 .DS_Store
