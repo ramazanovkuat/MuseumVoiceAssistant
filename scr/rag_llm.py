@@ -13,15 +13,16 @@ class RAG:
     который загружает ретривер и использует его для получения ответов на вопросы.
     """
     
-    def __init__(self, retriever_name_to_upload: str):
+    def __init__(self, retriever_path_to_upload: str):
         """
         Инициализирует экземпляр RAG, загружая ретривер из файла.
 
         Args:
-            retriever_name_to_upload (str): Имя файла с сохраненным ретривером (без расширения).
+            retriever_path_to_upload (str): путь к ретриверу (с расширением).
         """
-        self.retriever_name = retriever_name_to_upload
+        self.retriever_path_to_upload = retriever_path_to_upload
         self.retriever = self.upload_retriever()
+        # TODO: посмотреть, как определить версию модели 
         self.yandex_gpt = YandexGPT(api_key=os.getenv('YGPT_API_KEY'), folder_id=os.getenv('YGPT_FOLDER_IP'))
     
     def upload_retriever(self) -> Any:
@@ -29,9 +30,9 @@ class RAG:
         Загружает ретривер из файла .pkl и возвращает его.
 
         Returns:
-            Any: Загруженный объект ретривера.
+            Any: объект ретривера.
         """
-        with open(f'../data/vector_dbs/{self.retriever_name}.pkl', 'rb') as f:
+        with open(self.retriever_path_to_upload, 'rb') as f:
             retriever_uploaded = pickle.load(f)
         return retriever_uploaded
     
@@ -40,10 +41,10 @@ class RAG:
         Получает документы, связанные с вопросом, из ретривера.
 
         Args:
-            question (str): Вопрос, для которого необходимо извлечь документы.
+            question (str): вопрос, для которого необходимо извлечь документы.
 
         Returns:
-            list[Document]: Документы, извлеченные ретривером.
+            list[Document]: документы, извлеченные ретривером.
         """
         documents = self.retriever.invoke(question)
         return documents
@@ -53,10 +54,10 @@ class RAG:
         Генерирует ответ на вопрос, используя поисковую выдачу и LLM.
 
         Args:
-            question (str): Вопрос, для которого требуется сгенерировать ответ.
+            question (str): вопрос, для которого требуется сгенерировать ответ.
 
         Returns:
-            str: Ответ, сгенерированный с использованием поисковой выдачи и LLM.
+            str: ответ, сгенерированный с использованием поисковой выдачи и LLM.
         """
         documents = self.get_documents(question)
         context = self.process_retrieve_output(documents)
@@ -70,7 +71,7 @@ class RAG:
             f"Поисковая выдача: {context}"
         )
         
-        answer = yandex_gpt.invoke(prompt)
+        answer = self.yandex_gpt.invoke(prompt)
         answer_processer = self.process_answer(answer)
         return answer_processer
     
