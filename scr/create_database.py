@@ -65,7 +65,7 @@ def create_bm25_faiss_rerank(documents_folder: str | PosixPath,
     retriever = db.as_retriever(search_kwargs={"k": retrieve_n_docs})
     vector_database = EnsembleRetriever(retrievers=[bm25_retriever, retriever], weights=weights)
     rerank_model_name = "BAAI/bge-reranker-v2-m3"
-    rerank_model = HuggingFaceCrossEncoder(model_name=rerank_model_name)
+    rerank_model = HuggingFaceCrossEncoder(model_name=rerank_model_name, model_kwargs={'device': device})
     compressor = CrossEncoderReranker(model=rerank_model, top_n=rerank_n_docs)
     compression_retriever = ContextualCompressionRetriever(base_compressor=compressor, base_retriever=vector_database)
     return compression_retriever
